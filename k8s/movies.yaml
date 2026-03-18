@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: movies
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: movies
+  template:
+    metadata:
+      labels:
+        app: movies
+    spec:
+      containers:
+      - name: movies
+        image: yourdockerhub/movies-service
+        ports:
+        - containerPort: 3000
+        env:
+        - name: MONGO_URL
+          value: mongodb://mongo:27017/movies_db
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: movies
+spec:
+  type: NodePort
+  selector:
+    app: movies
+  ports:
+    - port: 3000
+      targetPort: 3000
+      nodePort: 30007
