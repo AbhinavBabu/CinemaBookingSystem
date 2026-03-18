@@ -1,0 +1,45 @@
+version: "3.9"
+
+services:
+
+  mongo:
+    image: mongo:6
+    container_name: mongo
+    ports:
+      - "27017:27017"
+
+  movies:
+    build: ./services/movies-service
+    container_name: movies
+    ports:
+      - "3001:3000"
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/movies_db
+    depends_on:
+      - mongo
+
+  showtimes:
+    build: ./services/showtimes-service
+    container_name: showtimes
+    ports:
+      - "3002:3000"
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/showtimes_db
+    depends_on:
+      - mongo
+
+  bookings:
+    build: ./services/bookings-service
+    container_name: bookings
+    ports:
+      - "3003:3000"
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/bookings_db
+    depends_on:
+      - mongo
+
+  frontend:
+    build: ./frontend
+    container_name: frontend
+    ports:
+      - "8080:80"
